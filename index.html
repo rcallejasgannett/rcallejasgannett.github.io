@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display a map</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute; 
+        top: 0; 
+        right: 0; 
+        bottom: 0; 
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      const key = '2w5RGeF3rAo6zUKbLi33';
+      const source = new ol.source.TileJSON({
+        url: `https://api.maptiler.com/maps/streets-v2/tiles.json?key=2w5RGeF3rAo6zUKbLi33`,
+        tileSize: 512,
+        crossOrigin: 'anonymous'
+      });
+
+      const attribution = new ol.control.Attribution({
+        collapsible: false,
+      });
+
+      var phoenixLonLat = [-112.036667, 33.895];
+      var phoenixWebMercator = ol.proj.fromLonLat(phoenixLonLat);
+      const map = new ol.Map({
+        layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+      
+      new ol.layer.Vector({
+    source: new ol.source.Vector({
+      url: 'https://firms.modaps.eosdis.nasa.gov/data/active_fire/modis-c6.1/kml/MODIS_C6_1_USA_contiguous_and_Hawaii_24h.kml',
+      format: new ol.format.KML('https://firms.modaps.eosdis.nasa.gov/data/active_fire/modis-c6.1/kml/MODIS_C6_1_USA_contiguous_and_Hawaii_24h.kml')
+            })
+          }),
+
+          new ol.layer.Vector({
+    source: new ol.source.Vector({
+      url: 'http://www.ospo.noaa.gov/data/spl/kmlfiles/fire/smoke.kmz',
+      format: new ol.format.KML('http://www.ospo.noaa.gov/data/spl/kmlfiles/fire/smoke.kmz')
+            })
+          })
+        ],
+        controls: ol.control.defaults.defaults({attribution: false}).extend([attribution]),
+        target: 'map',
+        view: new ol.View({
+          constrainResolution: true,
+          center: ol.proj.fromLonLat(phoenixLonLat),
+          zoom: 7
+        })
+      });
+    </script>
+  </body>
+</html>
